@@ -24,7 +24,7 @@ case class EditorRegisterMessagePlanner(userName: String, password: String,overr
           IO.raiseError(new Exception("already registered"))
         } else {
           val insertUser = writeDB(
-            s"INSERT INTO ${schemaName}.user_name (user_name, password, validation) VALUES (?, ?, False)",
+            s"INSERT INTO ${schemaName}.user_name (user_name, password, validation) VALUES (?, ?, FALSE)",
             List(SqlParameter("String", userName), SqlParameter("String", password))
           )
           val sendAuthMessage = AuthenEditorMessage(userName).send

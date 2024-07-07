@@ -22,7 +22,7 @@ case class EditorRequestMessagePlanner(userName: String, allowed:Boolean, overri
       } else {
         if (allowed) {
           writeDB(
-            s"UPDATE ${schemaName}.user_name SET validation = True WHERE user_name = ?",
+            s"UPDATE ${schemaName}.user_name SET validation = TRUE WHERE user_name = ?",
             List(SqlParameter("String", userName))
           ).as("Validation set to True")
         } else {
