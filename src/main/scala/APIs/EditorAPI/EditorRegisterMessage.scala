@@ -1,4 +1,6 @@
 package APIs.EditorAPI
 
-case class EditorRegisterMessage(userName: String, password: String) extends EditorMessage[String]
+import Shared.EditorInfo
+
+case class EditorRegisterMessage(editorInfo: EditorInfo) extends EditorMessage[String]
 

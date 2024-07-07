@@ -29,6 +29,26 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "EditorFindMessage" =>
+        IO(decode[EditorFindMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SuperuserLoginMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "EditorReadInfoMessage" =>
+        IO(decode[EditorReadInfoMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SuperuserLoginMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "EditorReadTasksMessage" =>
+        IO(decode[EditorReadTasksMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SuperuserLoginMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "EditorReceiveTaskMessage" =>
+        IO(decode[EditorReceiveTaskMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SuperuserLoginMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }
