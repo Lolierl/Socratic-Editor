@@ -16,7 +16,7 @@ case class EditorRegisterMessagePlanner(editorInfo: EditorInfo, override val pla
   override def plan(using planContext: PlanContext): IO[String] = {
     // Check if the user is already registered
     startTransaction {
-      val checkUserExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.user_name WHERE user_name = ?)",
+      val checkUserExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.users WHERE user_name = ?)",
         List(SqlParameter("String", editorInfo.userName))
       )
 
@@ -25,7 +25,7 @@ case class EditorRegisterMessagePlanner(editorInfo: EditorInfo, override val pla
           IO.pure("already registered")
         } else {
           val insertUser = writeDB(
-            s"INSERT INTO ${schemaName}.user_info (user_name, password, sur_name, last_name, institute, expertise, email, periodical, validation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, FALSE)",
+            s"INSERT INTO ${schemaName}.users (user_name, password, sur_name, last_name, institute, expertise, email, periodical, validation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, FALSE)",
             List(
               SqlParameter("String", editorInfo.userName),
               SqlParameter("String", editorInfo.password),

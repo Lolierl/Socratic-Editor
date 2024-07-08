@@ -14,7 +14,7 @@ case class EditorReadInfoMessagePlanner(property: String, userName:String, overr
   override def plan(using PlanContext): IO[String] = {
 
     readDBString(
-      s"SELECT ${property} FROM ${schemaName}.user_name WHERE user_name = ?",
+      s"SELECT ${property} FROM ${schemaName}.users WHERE user_name = ?",
       List(SqlParameter("String", userName))
     )
   }

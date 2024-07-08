@@ -14,7 +14,7 @@ case class EditorFindMessagePlanner(periodical: String, override val planContext
   override def plan(using PlanContext): IO[String] = {
 
     val fetchUserNamesIO: IO[List[Json]] = readDBRows(
-      s"SELECT user_name FROM ${schemaName}.user_name WHERE periodical = ?",
+      s"SELECT user_name FROM ${schemaName}.users WHERE periodical = ?",
       List(SqlParameter("String", periodical))
     )
 
