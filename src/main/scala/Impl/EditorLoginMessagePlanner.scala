@@ -32,7 +32,7 @@ case class EditorLoginMessagePlanner(userName: String, password: String, overrid
           case _ =>
             // 验证是否允许登录
             readDBBoolean(
-              s"SELECT validation FROM ${schemaName}.users WHERE user_name = ? AND password = ? AND validation = TRUE",
+              s"SELECT validation FROM ${schemaName}.users WHERE user_name = ? AND password = ?",
               List(SqlParameter("String", userName), SqlParameter("String", password))
             ).map { isValid =>
               if (isValid) "Valid user"
