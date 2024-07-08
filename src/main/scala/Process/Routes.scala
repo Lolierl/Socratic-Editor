@@ -15,37 +15,37 @@ object Routes:
   private def executePlan(messageType:String, str: String): IO[String]=
     messageType match {
       case "EditorRequestMessage" =>
-        IO(decode[EditorRequestMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SuperuserLoginMessage")))
+        IO(decode[EditorRequestMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for EditorRequestMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "EditorRegisterMessage" =>
-        IO(decode[EditorRegisterMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SuperuserLoginMessage")))
+        IO(decode[EditorRegisterMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for EditorRegisterMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "EditorLoginMessage" =>
-        IO(decode[EditorLoginMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SuperuserLoginMessage")))
+        IO(decode[EditorLoginMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for EditorLoginMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "EditorFindMessage" =>
-        IO(decode[EditorFindMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SuperuserLoginMessage")))
+        IO(decode[EditorFindMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for EditorFindMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "EditorReadInfoMessage" =>
-        IO(decode[EditorReadInfoMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SuperuserLoginMessage")))
+        IO(decode[EditorReadInfoMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for EditorReadInfoMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "EditorReadTasksMessage" =>
-        IO(decode[EditorReadTasksMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SuperuserLoginMessage")))
+        IO(decode[EditorReadTasksMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for EditorReadTasksMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "EditorReceiveTaskMessage" =>
-        IO(decode[EditorReceiveTaskMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for SuperuserLoginMessage")))
+        IO(decode[EditorReceiveTaskMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for EditorReceiveTaskMessage\"")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
