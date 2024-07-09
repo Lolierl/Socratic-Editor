@@ -6,7 +6,6 @@ import Common.API.{PlanContext, Planner}
 import Common.DBAPI.{writeDB, *}
 import Common.Object.{ParameterList, SqlParameter}
 import Common.ServiceUtils.schemaName
-import APIs.PatientAPI.PatientQueryMessage
 import cats.effect.IO
 import io.circe.generic.auto.*
 import APIs.ManagerAPI.AuthenEditorMessage
@@ -36,7 +35,7 @@ case class EditorRegisterMessagePlanner(editorInfo: EditorInfo, override val pla
               SqlParameter("String", editorInfo.email),
               SqlParameter("String", editorInfo.periodical)
             ))
-          val sendAuthMessage = AuthenEditorMessage(editorInfo.userName).send
+          val sendAuthMessage = AuthenEditorMessage(editorInfo.userName, editorInfo.periodical).send
 
           insertUser *> sendAuthMessage.as("Editor registered successfully")
         }

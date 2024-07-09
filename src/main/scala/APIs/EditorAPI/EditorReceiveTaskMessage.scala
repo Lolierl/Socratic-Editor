@@ -1,4 +1,4 @@
 package APIs.EditorAPI
 
-case class EditorReceiveTaskMessage(TaskName: String) extends EditorMessage[String]
+case class EditorReceiveTaskMessage(Periodical: String) extends EditorMessage[String]
 

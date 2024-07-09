@@ -1,4 +1,4 @@
 package APIs.ManagerAPI
 
-case class AuthenEditorMessage(userName: String) extends ManagerMessage[String]
+case class AuthenEditorMessage(userName: String, periodical: String) extends ManagerMessage[String]
 

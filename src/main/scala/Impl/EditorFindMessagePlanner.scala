@@ -1,6 +1,5 @@
 package Impl
 
-import APIs.PatientAPI.PatientQueryMessage
 import Common.API.{PlanContext, Planner}
 import Common.DBAPI.{writeDB, *}
 import Common.Object.{ParameterList, SqlParameter}
