@@ -1,5 +1,6 @@
 package Impl
 
+import APIs.UserManagementAPI.RegisterMessage
 import Common.API.{PlanContext, Planner}
 import Common.DBAPI.{writeDB, *}
 import Common.Object.{ParameterList, SqlParameter}
@@ -15,7 +16,15 @@ case class EditorRequestMessagePlanner(userName: String, allowed:Boolean, overri
       writeDB(
         s"UPDATE ${schemaName}.users SET validation = TRUE WHERE user_name = ?",
         List(SqlParameter("String", userName))
-      ).as("Validation set to True")
+      ).flatMap { _ =>
+        readDBString(
+          s"SELECT password FROM ${schemaName}.users WHERE user_name = ?",
+          List(SqlParameter("String", userName))
+        ).flatMap { password =>
+          RegisterMessage(userName, password, "editor").send
+
+        }
+      }
     } else {
       writeDB(
         s"DELETE FROM ${schemaName}.users WHERE user_name = ?",
