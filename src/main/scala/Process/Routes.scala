@@ -24,11 +24,6 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
-      case "EditorLoginMessage" =>
-        IO(decode[EditorLoginMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for EditorLoginMessage")))
-          .flatMap{m=>
-            m.fullPlan.map(_.asJson.toString)
-          }
       case "EditorFindMessage" =>
         IO(decode[EditorFindMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for EditorFindMessage")))
           .flatMap{m=>
@@ -39,13 +34,13 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
-      case "EditorReadTasksMessage" =>
-        IO(decode[EditorReadTasksMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for EditorReadTasksMessage")))
+      case "UserEditProfilePhotoMessage" =>
+        IO(decode[UserEditProfilePhotoMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for UserEditProfilePhotoMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
-      case "EditorReceiveTaskMessage" =>
-        IO(decode[EditorReceiveTaskMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for EditorReceiveTaskMessage\"")))
+      case "UserReadProfilePhotoMessage" =>
+        IO(decode[UserReadProfilePhotoMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for UserReadProfilePhotoMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }

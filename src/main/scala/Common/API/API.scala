@@ -87,11 +87,13 @@ object API {
       result <- client.get.run(request).use { response =>
         val handler = summon[ResponseHandler[T]] // Summon an instance of ResponseHandler for T
         response.status match {
+          //          case status if status.isSuccess =>
+          //            response.bodyText.compile.string.flatMap { body =>
+          //              IO.println(s"Response body: $body")
+          //            } >>
+          //              handler.handle(response)
           case status if status.isSuccess =>
-            response.bodyText.compile.string.flatMap { body =>
-              IO.println(s"Response body: $body")
-            } >>
-              handler.handle(response)
+            handler.handle(response)
           case _ =>
             response.bodyText.compile.string.flatMap { body =>
               (if (body.startsWith(DidRollbackException.prefix))
