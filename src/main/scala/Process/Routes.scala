@@ -44,6 +44,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "AuthenReviewerMessage" =>
+        IO(decode[AuthenReviewerMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for AuthenReviewerMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }
