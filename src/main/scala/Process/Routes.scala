@@ -49,6 +49,16 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "AddReviewerMessage" =>
+        IO(decode[AddReviewerMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for AddReviewerMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "DeleteReviewerMessage" =>
+        IO(decode[DeleteReviewerMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for DeleteReviewerMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }
