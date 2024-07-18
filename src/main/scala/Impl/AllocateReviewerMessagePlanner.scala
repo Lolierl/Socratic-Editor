@@ -25,13 +25,15 @@ case class AllocateReviewerMessagePlanner(taskName: String, Periodical: String, 
     )
 
     for {
-      author <- GetAuthor
+      authorJsonList <- GetAuthor.flatTap(author => IO(println(s"Author JSON: $author")))
+      authors = parse(authorJsonList).getOrElse(Json.arr()).asArray.getOrElse(Vector()).flatMap(_.hcursor.get[String]("userName").toOption)
       rows <- getReviewers
       reviewers = rows.flatMap { row =>
         parse(row.toString).toOption.flatMap(_.hcursor.get[String]("userName").toOption)
       }
-      reviewersWithoutAuthor = reviewers.filterNot(_ == author)
-      selectedReviewers = Random.shuffle(reviewersWithoutAuthor).take(ReviewersPerArticle)
+      reviewersWithoutAuthors = reviewers.filterNot(authors.contains)
+
+      selectedReviewers = Random.shuffle(reviewersWithoutAuthors).take(ReviewersPerArticle)
       sendMessages = selectedReviewers.map { reviewer =>
         AddTaskIdentityMessage(taskName, reviewer, "reviewer").send
       }
