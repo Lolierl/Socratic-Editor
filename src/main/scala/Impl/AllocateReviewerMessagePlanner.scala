@@ -6,6 +6,7 @@ import Common.DBAPI.{writeDB, *}
 import Common.Object.{ParameterList, SqlParameter}
 import Common.ServiceUtils.schemaName
 import Global.GlobalVariables.maximumReviewers
+import Global.GlobalVariables.ReviewersPerArticle
 import cats.effect.IO
 import io.circe.Json
 import io.circe.parser.parse
@@ -25,7 +26,7 @@ case class AllocateReviewerMessagePlanner(taskName: String, Periodical:String, o
           parse(row.toString).toOption.flatMap(_.hcursor.get[String]("user_name").toOption)
         }
 
-        val selectedReviewers = Random.shuffle(reviewers).take(3)
+        val selectedReviewers = Random.shuffle(reviewers).take(ReviewersPerArticle)
 
         // 对每个选出的评审员调用 AddTaskIdentityMessage(userName).send
         val sendMessages = selectedReviewers.map { reviewer =>
