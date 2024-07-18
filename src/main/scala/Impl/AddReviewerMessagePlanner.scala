@@ -29,7 +29,7 @@ case class AddReviewerMessagePlanner(userName: String, Periodical:String, overri
             IO.pure("already reach maximum reviewers")
           } else {
             // Check if the user is already authorized
-            val checkIfAuthorized = readDBBoolean(s"SELECT COUNT(*) FROM ${schemaName}.reviewers WHERE periodical = ? AND user_name = ?",
+            val checkIfAuthorized = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.reviewers WHERE periodical = ? AND user_name = ?)",
               List(SqlParameter("String", Periodical), SqlParameter("String", userName))
             )
 
