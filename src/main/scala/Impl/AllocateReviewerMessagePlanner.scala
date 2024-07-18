@@ -13,26 +13,29 @@ import io.circe.parser.parse
 import io.circe.generic.auto.*
 import scala.util.Random
 import cats.implicits._
-import APIs.TaskAPI.AddTaskIdentityMessage
+import APIs.TaskAPI.ReadTaskAuthorMessage
 
-case class AllocateReviewerMessagePlanner(taskName: String, Periodical:String, override val planContext: PlanContext) extends Planner[String]:
+case class AllocateReviewerMessagePlanner(taskName: String, Periodical: String, override val planContext: PlanContext) extends Planner[String] {
+
   override def plan(using PlanContext): IO[String] = {
-    val getReviewers = readDBRows(s"SELECT user_name FROM ${schemaName}.reviewers WHERE periodical = ?",
+    val GetAuthor = ReadTaskAuthorMessage(taskName).send
+    val getReviewers = readDBRows(
+      s"SELECT user_name FROM ${schemaName}.reviewers WHERE periodical = ?",
       List(SqlParameter("String", Periodical))
     )
-    getReviewers.flatMap{rows =>
-    {
-        val reviewers = rows.flatMap { row =>
-          parse(row.toString).toOption.flatMap(_.hcursor.get[String]("userName").toOption)
-        }
-        val selectedReviewers = Random.shuffle(reviewers).take(ReviewersPerArticle)
-        println(selectedReviewers)
-        // 对每个选出的评审员调用 AddTaskIdentityMessage(userName).send
-        val sendMessages = selectedReviewers.map { reviewer =>
-          AddTaskIdentityMessage(taskName, reviewer, "reviewer").send
-        }
-        sendMessages.parSequence.map(_ => "Messages sent successfully")
-    }
-    }
 
+    for {
+      author <- GetAuthor
+      rows <- getReviewers
+      reviewers = rows.flatMap { row =>
+        parse(row.toString).toOption.flatMap(_.hcursor.get[String]("userName").toOption)
+      }
+      reviewersWithoutAuthor = reviewers.filterNot(_ == author)
+      selectedReviewers = Random.shuffle(reviewersWithoutAuthor).take(ReviewersPerArticle)
+      sendMessages = selectedReviewers.map { reviewer =>
+        AddTaskIdentityMessage(taskName, reviewer, "reviewer").send
+      }
+      result <- sendMessages.parSequence.map(_ => "Messages sent successfully")
+    } yield result
   }
+}
