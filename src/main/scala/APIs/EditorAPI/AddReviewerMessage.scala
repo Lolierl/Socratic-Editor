@@ -1,4 +1,4 @@
 package APIs.EditorAPI
 
-case class AddReviewerMessage(taskName: String, Periodical:String) extends EditorMessage[String]
+case class AddReviewerMessage(userName: String, Periodical:String) extends EditorMessage[String]
 

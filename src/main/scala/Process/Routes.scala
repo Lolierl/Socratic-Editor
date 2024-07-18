@@ -44,13 +44,13 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
-      case "AuthenReviewerMessage" =>
-        IO(decode[AuthenReviewerMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for AuthenReviewerMessage")))
+      case "AddReviewerMessage" =>
+        IO(decode[AddReviewerMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for AddReviewerMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
-      case "AddReviewerMessage" =>
-        IO(decode[AddReviewerMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for AddReviewerMessage")))
+      case "AllocateReviewerMessage" =>
+        IO(decode[AllocateReviewerMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for AllocateReviewerMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
