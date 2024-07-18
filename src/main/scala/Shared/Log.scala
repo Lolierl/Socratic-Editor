@@ -8,7 +8,7 @@ import io.circe.parser.decode
 
 object Decision extends Enumeration {
   type Decision = Value
-  val Review, Reject, Revise = Value
+  val Review, Reject, Revise, None = Value
   implicit val decisionEncoder: Encoder[Decision] = Encoder.encodeString.contramap[Decision](_.toString)
   implicit val decisionDecoder: Decoder[Decision] = Decoder.decodeString.emap { str =>
     Decision.values.find(_.toString == str).toRight(s"Invalid Decision value: $str")
