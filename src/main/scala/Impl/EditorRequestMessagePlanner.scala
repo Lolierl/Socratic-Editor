@@ -13,11 +13,11 @@ case class EditorRequestMessagePlanner(userName: String, allowed:Boolean, overri
   override def plan(using planContext: PlanContext): IO[String] = {
     // Check if the user is already registered
     if (allowed) {
-      writeDB(
-        s"UPDATE ${schemaName}.users SET validation = TRUE WHERE user_name = ?",
-        List(SqlParameter("String", userName))
-      ).flatMap { _ =>
         for {
+          _ <- writeDB(
+            s"UPDATE ${schemaName}.users SET validation = TRUE WHERE user_name = ?",
+            List(SqlParameter("String", userName))
+          )
           passwordHash <- readDBString(
             s"SELECT password_hash FROM ${schemaName}.key_buffer WHERE user_name = ?",
             List(SqlParameter("String", userName))
@@ -26,9 +26,12 @@ case class EditorRequestMessagePlanner(userName: String, allowed:Boolean, overri
             s"SELECT salt FROM ${schemaName}.key_buffer WHERE user_name = ?",
             List(SqlParameter("String", userName))
           )
-          result = RegisterMessage(userName, passwordHash, salt, "editor").send
+          _ <- writeDB(
+            s"DELETE FROM ${schemaName}.key_buffer WHERE user_name = ?",
+            List(SqlParameter("String", userName))
+          )
+          result <- RegisterMessage(userName, passwordHash, salt, "editor").send
         } yield "OK"
-      }
     } else {
       for {
         _ <- writeDB(
