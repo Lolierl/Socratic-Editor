@@ -34,13 +34,28 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
-      case "EditorReadTasksMessage" =>
-        IO(decode[EditorReadTasksMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for EditorReadTasksMessage")))
+      case "UserEditProfilePhotoMessage" =>
+        IO(decode[UserEditProfilePhotoMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for UserEditProfilePhotoMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
-      case "EditorReceiveTaskMessage" =>
-        IO(decode[EditorReceiveTaskMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for EditorReceiveTaskMessage\"")))
+      case "UserReadProfilePhotoMessage" =>
+        IO(decode[UserReadProfilePhotoMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for UserReadProfilePhotoMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "AddReviewerMessage" =>
+        IO(decode[AddReviewerMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for AddReviewerMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "AllocateReviewerMessage" =>
+        IO(decode[AllocateReviewerMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for AllocateReviewerMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "DeleteReviewerMessage" =>
+        IO(decode[DeleteReviewerMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for DeleteReviewerMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
