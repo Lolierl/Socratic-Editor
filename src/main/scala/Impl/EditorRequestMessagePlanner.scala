@@ -17,19 +17,29 @@ case class EditorRequestMessagePlanner(userName: String, allowed:Boolean, overri
         s"UPDATE ${schemaName}.users SET validation = TRUE WHERE user_name = ?",
         List(SqlParameter("String", userName))
       ).flatMap { _ =>
-        readDBString(
-          s"SELECT password FROM ${schemaName}.users WHERE user_name = ?",
-          List(SqlParameter("String", userName))
-        ).flatMap { password =>
-          RegisterMessage(userName, password, "editor").send
-
-        }
+        for {
+          passwordHash <- readDBString(
+            s"SELECT password_hash FROM ${schemaName}.key_buffer WHERE user_name = ?",
+            List(SqlParameter("String", userName))
+          )
+          salt <- readDBString(
+            s"SELECT salt FROM ${schemaName}.key_buffer WHERE user_name = ?",
+            List(SqlParameter("String", userName))
+          )
+          result = RegisterMessage(userName, passwordHash, salt, "editor").send
+        } yield "OK"
       }
     } else {
-      writeDB(
-        s"DELETE FROM ${schemaName}.users WHERE user_name = ?",
-        List(SqlParameter("String", userName))
-      ).as("User deleted")
+      for {
+        _ <- writeDB(
+          s"DELETE FROM ${schemaName}.users WHERE user_name = ?",
+          List(SqlParameter("String", userName))
+        )
+        _ <- writeDB(
+          s"DELETE FROM ${schemaName}.key_buffer WHERE user_name = ?",
+          List(SqlParameter("String", userName))
+        )
+      } yield "User deleted"
     }
   }
 

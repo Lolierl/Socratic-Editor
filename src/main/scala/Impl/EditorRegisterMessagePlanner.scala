@@ -11,6 +11,7 @@ import io.circe.generic.auto.*
 import APIs.ManagerAPI.AuthenEditorMessage
 import Shared.EditorInfo
 import APIs.UserManagementAPI.CheckUserExistsMessage
+import Shared.PasswordHasher.hashPassword
 
 case class EditorRegisterMessagePlanner(editorInfo: EditorInfo, password:String, override val planContext: PlanContext) extends Planner[String]:
   override def plan(using planContext: PlanContext): IO[String] = {
@@ -22,20 +23,28 @@ case class EditorRegisterMessagePlanner(editorInfo: EditorInfo, password:String,
         if (exists) {
           IO.pure("already registered")
         } else {
-          val insertUser = writeDB(
-            s"INSERT INTO ${schemaName}.users (user_name, sur_name, last_name, institute, expertise, email, periodical, validation) VALUES (?, ?, ?, ?, ?, ?, ?, FALSE)",
-            List(
-              SqlParameter("String", editorInfo.userName),
-              SqlParameter("String", editorInfo.surName),
-              SqlParameter("String", editorInfo.lastName),
-              SqlParameter("String", editorInfo.institute),
-              SqlParameter("String", editorInfo.expertise),
-              SqlParameter("String", editorInfo.email),
-              SqlParameter("String", editorInfo.periodical)
-            ))
-          val sendAuthMessage = AuthenEditorMessage(editorInfo.userName, editorInfo.periodical).send
-
-          insertUser *> sendAuthMessage.as("Editor registered successfully")
+          val (passwordHash, salt) = hashPassword(password)
+          for {
+            _ <- writeDB(
+              s"INSERT INTO ${schemaName}.key_buffer (user_name, password_hash, salt) VALUES (?, ?, ?)",
+              List(
+                SqlParameter("String", editorInfo.userName),
+                SqlParameter("String", passwordHash),
+                SqlParameter("String", salt)
+              ))
+            _ <- writeDB(
+              s"INSERT INTO ${schemaName}.users (user_name, sur_name, last_name, institute, expertise, email, periodical, validation) VALUES (?, ?, ?, ?, ?, ?, ?, FALSE)",
+              List(
+                SqlParameter("String", editorInfo.userName),
+                SqlParameter("String", editorInfo.surName),
+                SqlParameter("String", editorInfo.lastName),
+                SqlParameter("String", editorInfo.institute),
+                SqlParameter("String", editorInfo.expertise),
+                SqlParameter("String", editorInfo.email),
+                SqlParameter("String", editorInfo.periodical)
+              ))
+            _ <- AuthenEditorMessage(editorInfo.userName, editorInfo.periodical).send
+          } yield "Editor registered successfully"
         }
       }
     }

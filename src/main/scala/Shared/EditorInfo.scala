@@ -2,7 +2,6 @@ package Shared
 
 case class EditorInfo(
                      userName: String,
-                     password: String,
                      surName: String,
                      lastName: String,
                      institute: String,
